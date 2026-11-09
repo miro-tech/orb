@@ -35,7 +35,7 @@ jobs:
         env:
           ORB_PASSWORD: ${{ secrets.ORB_PASSWORD }}
         run: |
-          python orb_oneshot.py --ads 0 --o orb_output --password "$ORB_PASSWORD"
+          python orb_oneshot.py --o orb_output --password "$ORB_PASSWORD"
 
       - name: Update GitHub Gist
         env:
@@ -61,6 +61,7 @@ jobs:
 
           for name in names:
               path = folder / name
+
               if not path.is_file():
                   raise SystemExit(f"Missing file: {path}")
 
@@ -70,6 +71,9 @@ jobs:
 
           token = os.environ["GIST_TOKEN"]
           gist_id = os.environ["GIST_ID"]
+
+          if not token or not gist_id:
+              raise SystemExit("GIST_TOKEN or GIST_ID is missing")
 
           response = requests.patch(
               f"https://api.github.com/gists/{gist_id}",
